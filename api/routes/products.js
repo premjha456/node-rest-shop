@@ -9,7 +9,21 @@ router.get('/',(req,res,next)=>{
   
   Product.find()
   .then((doc)=>{
-    res.status(200).send(doc);
+    var resp={
+      count: doc.length,
+      product: doc.map(d=>{
+        return {
+          name: d.name,
+          price: d.price,
+          _id:d._id,
+          request:{
+            type:'GET',
+            url:'http://localhost:8000/products/'+d._id
+          }
+        }
+      })
+    }
+    res.status(200).send(resp);
   })
   .catch((e)=>{
     res.status(400).send(e);
@@ -30,7 +44,18 @@ router.post('/',(req,res,next)=>{
   .save()
   .then((doc)=>{
     console.log(doc);
-     res.send(doc);  
+     res.status(200).send({
+      message:"Created New Product",
+      createdProduct:{
+        name: doc.name,
+        price:doc.price,
+        _id:doc._id,
+        request:{
+          type:'GET',
+          url:'http://localhost:8000/products/'+doc._id
+        }
+      }
+     });  
    },
     (e)=>{
       console.log(e);
