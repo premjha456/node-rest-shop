@@ -1,49 +1,88 @@
 const express =require('express');
 const router =express.Router();
+const {mongoose} = require('../db/mongoose');
 
+const Product =require('../models/product');
+
+//to get list of all products 
 router.get('/',(req,res,next)=>{
-
-	res.status(200).json({
-		message:'Handling GET request to /products'
-	});
+  
+  Product.find()
+  .then((doc)=>{
+    res.status(200).send(doc);
+  })
+  .catch((e)=>{
+    res.status(400).send(e);
+  })
+	
 });
 
+//to add new product in database
 router.post('/',(req,res,next)=>{
 
-	res.status(200).json({
-		message:'Handling POST request to /products'
-	});
+  var product = new Product({
+    _id:new mongoose.Types.ObjectId(),
+    name:req.body.name,
+    price:req.body.price
+  });
+
+  product
+  .save()
+  .then((doc)=>{
+    console.log(doc);
+     res.send(doc);  
+   },
+    (e)=>{
+      console.log(e);
+    res.status(400).send(e);
+  });
+
 });
 
 
+//to get a individual product from database
 router.get('/:productId',(req,res,next)=>{
   const id=req.params.productId;
-  if (id=='special') {
-  	res.status(200).json({
-  	message:'This is special id'
-  	});
+
+  Product.findById(id)
+  .then((product)=>{
+    if (!product) {
+    return console.log('Id not found');
   }
-  else{
-  	res.status(200).json({
-  		message:'You passed an id'
-  	});
-  }
+    console.log(product);
+    res.send(product);
+  })
+  .catch((e)=>{
+    res.status(400).send(e);
+    console.log(e);
+  })
+
 });
-
-
 
 
 router.patch('/:productId',(req,res,next)=>{
-  	res.status(200).json({
-  		message:'Update products'
-});
+  	  var id =req.params.productId;
+
+    Product.update({_id:id},{$set:{name: req.body.newname,price: req.body.newprice}})
+    .then((res)=>{
+      res.status(200).send(res);
+    })
+    .catch((e)=>{
+      res.status(400).send(e);
+    });
+
 });
 
 
 router.delete('/:productId',(req,res,next)=>{
-	res.status(200).json({
-		message:'Delete Products'
+  var id =req.params.productId;
+  Product.findByIdAndRemove(id)
+  .then((res)=>{
+    res.status(200).send(res);
+  })
+  .catch((e)=>{
+    res.status(400).send(e)
+  });
 	});
-});
 
 module.exports=router;

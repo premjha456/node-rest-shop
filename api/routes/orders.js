@@ -9,14 +9,18 @@ router.get('/',(req,res,next)=>{
 });
 
 router.post('/',(req,res,next)=>{
-
+    const order={
+    	productId:req.body.productId,
+    	quantity:req.body.quantity
+    }
 	res.status(200).json({
-		message:'Post request for orders'
+		message:'Post request for orders',
+		createdOrder:order
 	});
 });
 
 router.get('/:orderId',(req,res,next)=>{
-
+    
 	res.status(200).json({
 		message:'get order wit id',
 	//	orderId=req.params.orderId
