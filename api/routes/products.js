@@ -2,6 +2,7 @@ const express =require('express');
 const router =express.Router();
 const {mongoose} = require('../db/mongoose');
 const multer =require('multer');
+const Product =require('../models/product');
 
 const storage = multer.diskStorage({
   destination:function(req,file,cb){
@@ -31,7 +32,6 @@ const upload=multer({
   fileFilter:fileFilter
 });
 
-const Product =require('../models/product');
 
 //to get list of all products 
 router.get('/',(req,res,next)=>{

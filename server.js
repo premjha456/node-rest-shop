@@ -4,6 +4,8 @@ const bodyParser=require('body-parser');
 
 const productRoutes = require('./api/routes/products');
 const orderRoutes= require('./api/routes/orders');
+const userRoutes= require('./api/routes/users');
+
 
 app.use('/uploads',express.static('uploads'));
 //TO PARSE BODY INTO PROPER JSON BODY
@@ -27,6 +29,9 @@ app.use('/products',productRoutes);
 
 //any route starting with /orders will be mapped to ordersRoute file and the routes in that file 
 app.use('/orders',orderRoutes);
+
+//any route starting with /users will be mapped to usersRoute file and the routes in that file
+app.use('/users',userRoutes);
 
 app.use((req,res,next)=>{
    
