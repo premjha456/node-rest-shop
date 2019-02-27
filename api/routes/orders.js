@@ -2,9 +2,11 @@ const express =require('express');
 const router =express.Router();
 const {mongoose} = require('../db/mongoose');
 const Order = require('../models/order');
+const checkAuth = require('../middleware/check-auth');
 
 
-router.get('/',(req,res,next)=>{
+// to handle get request for all products
+router.get('/',checkAuth,(req,res,next)=>{
     
 
     Order.find()
@@ -32,7 +34,8 @@ router.get('/',(req,res,next)=>{
     })
 });
 
-router.post('/',(req,res,next)=>{
+// to handle post request for add new order
+router.post('/',checkAuth,(req,res,next)=>{
 
 	const order = new Order({
       _id: mongoose.Types.ObjectId(),
@@ -63,7 +66,9 @@ router.post('/',(req,res,next)=>{
 	})
 });
 
-router.get('/:orderId',(req,res,next)=>{
+
+// to handle get request fora single order
+router.get('/:orderId',checkAuth,(req,res,next)=>{
     
     const id=req.params.orderId;
 	Order.findById(id)
@@ -77,7 +82,9 @@ router.get('/:orderId',(req,res,next)=>{
     })
 });
 
-router.delete('/:orderId',(req,res,next)=>{
+
+// to handle delete request for a single order
+router.delete('/:orderId',checkAuth,(req,res,next)=>{
 
     const id=req.params.orderId;
     Order.findByIdAndRemove(id)
@@ -89,6 +96,5 @@ router.delete('/:orderId',(req,res,next)=>{
     	res.status(400).send(e);
     })
 });
-
 
 module.exports=router;

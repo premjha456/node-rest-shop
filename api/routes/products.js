@@ -3,6 +3,7 @@ const router =express.Router();
 const {mongoose} = require('../db/mongoose');
 const multer =require('multer');
 const Product =require('../models/product');
+const checkAuth = require('../middleware/check-auth');
 
 const storage = multer.diskStorage({
   destination:function(req,file,cb){
@@ -62,7 +63,7 @@ router.get('/',(req,res,next)=>{
 });
 
 //to add new product in database
-router.post('/',upload.single('productImage'),(req,res,next)=>{
+router.post('/',checkAuth,upload.single('productImage'),(req,res,next)=>{
 
   console.log(req.file);
   var product = new Product({
@@ -117,8 +118,8 @@ router.get('/:productId',(req,res,next)=>{
 
 });
 
-
-router.patch('/:productId',(req,res,next)=>{
+//to update a existing product 
+router.patch('/:productId',checkAuth,(req,res,next)=>{
   	  var id =req.params.productId;
 
     Product.update({_id:id},{$set:{name: req.body.newname,price: req.body.newprice}})
@@ -131,8 +132,8 @@ router.patch('/:productId',(req,res,next)=>{
 
 });
 
-
-router.delete('/:productId',(req,res,next)=>{
+// to delete a product 
+router.delete('/:productId',checkAuth,(req,res,next)=>{
   var id =req.params.productId;
   Product.findByIdAndRemove(id)
   .then((res)=>{
